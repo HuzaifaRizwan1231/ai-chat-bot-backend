@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import gemini_routes, openai_routes
+from routes import chat_routes
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -15,8 +15,7 @@ app.add_middleware(
 )
 
 # Routes
-app.include_router(gemini_routes.router, prefix="/api/gemini")
-app.include_router(openai_routes.router, prefix="/api/openai")
+app.include_router(chat_routes.router, prefix="/api/chat")
 
 
 
