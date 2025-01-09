@@ -1,4 +1,5 @@
 import openai
+from utils.response_builder import ResponseBuilder
 
 def openaiChatCompletion(model, text):
     try:    
@@ -9,10 +10,10 @@ def openaiChatCompletion(model, text):
                 {"role": "user", "content": text}
             ]
         )
-        return {"success": True, "message": completion.choices[0].message.content, "statusCode": 200}
+        return ResponseBuilder().setSuccess(True).setMessage("Response Generated Successfully").setData(completion.choices[0].message.content).setStatusCode(200).build()
 
     except Exception as e:
-        response = {"success": False, "message":e.response.json().get('error', {}).get('message', str(e)), "statusCode": e.response.status_code}
+        response = ResponseBuilder().setSuccess(False).setMessage("An Error Occured").setError(e.response.json().get('error', {}).get('message', str(e))).setStatusCode(e.response.status_code).build()
         # Logging the error
         print(response)
         return response

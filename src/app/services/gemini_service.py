@@ -1,19 +1,18 @@
 import google.generativeai as genai
+from utils.response_builder import ResponseBuilder
+from config import MAX_OUTPUT_TOKENS, TEMPERATURE
 
 def geminiChatCompletion(model, text):
     try:     
         model = genai.GenerativeModel(model)
         response = model.generate_content(text, generation_config=genai.GenerationConfig(
-            max_output_tokens=500,
-            temperature=0.7,
+            max_output_tokens=MAX_OUTPUT_TOKENS,
+            temperature=TEMPERATURE,
         ))
         print(response)
-        return {"success": True, "message": response.text, "statusCode": 200}
+        return ResponseBuilder().setSuccess(True).setMessage("Response Generated Successfully").setData(response.text).setStatusCode(200).build()
 
     except Exception as e:
-        response = {"success": False, "message":"An Error Occured: " + str(e), "statusCode": 500}
-
-        # Logging the error
+        response = ResponseBuilder().setSuccess(False).setMessage("An Error Occured").setError(e).setStatusCode(500).build()
         print(response)
-
         return response
