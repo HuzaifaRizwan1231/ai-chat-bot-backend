@@ -19,7 +19,7 @@ class MergeStackChatAssistant:
         # Assistant creation
         self.my_assistant = openai.beta.assistants.create(
             instructions="Your name is MergeGPT and you are an expert HR assistant for Mergestack. Use your knowledge base to answer any queries regarding the company, its policies and procedures. All this responses should follow proper markdown formatting.",
-            name="MergGPT",
+            name="MergeGPT",
             tools=[{"type":"file_search"}],
             model=model,
             tool_resources={"file_search": {"vector_store_ids": [vector_store.id]}},
