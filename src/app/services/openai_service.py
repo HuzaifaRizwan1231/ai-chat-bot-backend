@@ -9,7 +9,7 @@ def openaiMergestackChatAssistant(model, text):
     global mergestackInstance
     try:
         if mergestackInstance is None:
-            mergestackInstance = MergeStackChatAssistant(model)
+            mergestackInstance = MergeStackChatAssistant(model)            
             
         # Adding the user message to the thread
         openai.beta.threads.messages.create(
