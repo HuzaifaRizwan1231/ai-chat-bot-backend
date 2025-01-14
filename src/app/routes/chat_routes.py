@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, File
+from fastapi import APIRouter, UploadFile, File, Request
 from dotenv import load_dotenv
 import google.generativeai as genai
 import openai
@@ -10,6 +10,7 @@ from services.claude_service import claudeChatCompletion
 from services.assemblyai_service import assemblyaiTranscribe
 from utils.response_builder import ResponseBuilder
 from utils.pycrypto import decrypt
+from utils.limiter import limiter
 
 
 # Initialize
@@ -21,7 +22,8 @@ genai.configure(api_key=GEMINI_API_KEY)
 openai.api_key = OPENAI_API_KEY
 
 @router.post("/completion")
-def chatCompletion(body: chatCompletionRequestSchema):
+@limiter.limit("1/minute")
+def chatCompletion(request: Request, body: chatCompletionRequestSchema):
     
     body.text = decrypt(body.text)
     
@@ -38,7 +40,8 @@ def chatCompletion(body: chatCompletionRequestSchema):
     
     
 @router.post("/transcribe")
-async def transcribe(audio: UploadFile = File(...)):
+@limiter.limit("1/minute")
+async def transcribe(request: Request , audio: UploadFile = File(...)):
     try:
         # Process the uploaded audio file
         audioContent = await audio.read()
