@@ -9,6 +9,7 @@ from services.openai_service import openaiChatCompletion, openaiMergestackChatAs
 from services.claude_service import claudeChatCompletion
 from services.assemblyai_service import assemblyaiTranscribe
 from utils.response_builder import ResponseBuilder
+from utils.pycrypto import decrypt
 
 
 # Initialize
@@ -21,6 +22,9 @@ openai.api_key = OPENAI_API_KEY
 
 @router.post("/completion")
 def chatCompletion(body: chatCompletionRequestSchema):
+    
+    body.text = decrypt(body.text)
+    
     if body.model in ALLOWED_GEMINI_MODELS:
         return geminiChatCompletion(body.model, body.text)
     elif body.model in ALLOWED_OPENAI_MODELS:

@@ -9,6 +9,8 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 CLAUDE_API_KEY = os.getenv("CLAUDE_API_KEY")
 ASSEMBLYAI_API_KEY = os.getenv("ASSEMBLYAI_API_KEY")
+AES_SECRET_KEY = (os.getenv("AES_SECRET_KEY"))
+AES_IV = (os.getenv("AES_IV"))
 
 # Allowed Models
 ALLOWED_OPENAI_MODELS = ["gpt-4o"]

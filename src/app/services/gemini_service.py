@@ -1,6 +1,7 @@
 import google.generativeai as genai
 from utils.response_builder import ResponseBuilder
 from config import MAX_OUTPUT_TOKENS, TEMPERATURE
+from utils.pycrypto import encrypt
 
 def geminiChatCompletion(model, text):
     try:     
@@ -9,8 +10,8 @@ def geminiChatCompletion(model, text):
             max_output_tokens=MAX_OUTPUT_TOKENS,
             temperature=TEMPERATURE,
         ))
-        print(response)
-        return ResponseBuilder().setSuccess(True).setMessage("Response Generated Successfully").setData(response.text).setStatusCode(200).build()
+        encrypted_data = encrypt(response.text)
+        return ResponseBuilder().setSuccess(True).setMessage("Response Generated Successfully").setData(encrypted_data).setStatusCode(200).build()
 
     except Exception as e:
         response = ResponseBuilder().setSuccess(False).setMessage("An Error Occured").setError(e).setStatusCode(500).build()
