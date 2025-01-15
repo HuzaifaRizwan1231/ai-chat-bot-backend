@@ -4,7 +4,6 @@ from routes import chat_routes
 from slowapi.errors import RateLimitExceeded
 from utils.limiter import limiter,  rate_limit_exceeded_handler
 from config import FRONTEND_URL
-from mangum import Mangum
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -28,10 +27,6 @@ app.add_middleware(
 
 # Routes
 app.include_router(chat_routes.router, prefix="/api/chat")
-
-# WSGI adapter
-handler = Mangum(app)
-
   
 
 
