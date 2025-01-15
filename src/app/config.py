@@ -4,6 +4,9 @@ from dotenv import load_dotenv
 # initialize
 load_dotenv()
 
+# Frontend URL
+FRONTEND_URL = os.getenv("FRONTEND_URL")
+
 # API Keys
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")

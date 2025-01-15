@@ -22,7 +22,7 @@ genai.configure(api_key=GEMINI_API_KEY)
 openai.api_key = OPENAI_API_KEY
 
 @router.post("/completion")
-@limiter.limit("1/minute")
+@limiter.limit("5/minute")
 def chatCompletion(request: Request, body: chatCompletionRequestSchema):
     
     body.text = decrypt(body.text)
