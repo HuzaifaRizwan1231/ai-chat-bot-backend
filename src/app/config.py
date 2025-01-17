@@ -16,7 +16,7 @@ AES_SECRET_KEY = (os.getenv("AES_SECRET_KEY"))
 AES_IV = (os.getenv("AES_IV"))
 
 # Allowed Models
-ALLOWED_OPENAI_MODELS = ["gpt-4o"]
+ALLOWED_OPENAI_MODELS = ["gpt-4o", "ft:gpt-4o-mini-2024-07-18:mergestack::AqhhvrOU"]
 ALLOWED_GEMINI_MODELS = ["gemini-1.5-flash"]
 ALLOWED_CLAUDE_MODELS = ["claude-3-5-sonnet-20241022"]
 
