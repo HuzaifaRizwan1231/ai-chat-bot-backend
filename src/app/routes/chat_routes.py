@@ -2,10 +2,10 @@ from fastapi import APIRouter, UploadFile, File, Request
 from dotenv import load_dotenv
 import google.generativeai as genai
 import openai
-from config import GEMINI_API_KEY, OPENAI_API_KEY, ALLOWED_OPENAI_MODELS, ALLOWED_GEMINI_MODELS, ALLOWED_CLAUDE_MODELS
+from config import GEMINI_API_KEY, OPENAI_API_KEY, ALLOWED_OPENAI_MODELS, ALLOWED_GEMINI_MODELS, ALLOWED_CLAUDE_MODELS, ALLOWED_STREAM_MODELS
 from schemas.chat_schema import chatCompletionRequestSchema
 from services.gemini_service import geminiChatCompletion
-from services.openai_service import openaiChatCompletion, openaiMergestackChatAssistant
+from services.openai_service import openaiChatCompletion, openaiChatStream, openaiMergestackChatAssistant
 from services.claude_service import claudeChatCompletion
 from services.assemblyai_service import assemblyaiTranscribe
 from utils.response_builder import ResponseBuilder
@@ -23,7 +23,7 @@ openai.api_key = OPENAI_API_KEY
 
 @router.post("/completion")
 @limiter.limit("5/minute")
-def chatCompletion(request: Request, body: chatCompletionRequestSchema):
+async def chatCompletion(request: Request, body: chatCompletionRequestSchema):
     
     body.text = decrypt(body.text)
     
@@ -50,7 +50,13 @@ async def transcribe(request: Request , audio: UploadFile = File(...)):
     except Exception as e:
         return ResponseBuilder().setSuccess(False).setMessage("An Error Occurred").setError(str(e)).setStatusCode(500).build()
 
+@router.get("/stream")
+@limiter.limit("5/minute")
+async def chatStream(request: Request, model: str, text: str):
 
-
+    if model in ALLOWED_STREAM_MODELS and model in ALLOWED_OPENAI_MODELS:
+        return await openaiChatStream(model, text) 
+    else:
+        return ResponseBuilder().setSuccess(False).setMessage("Invalid model").setStatusCode(400).build()
 
 
