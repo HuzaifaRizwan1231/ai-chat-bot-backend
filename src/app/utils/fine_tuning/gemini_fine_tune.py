@@ -1,15 +1,16 @@
 import google.generativeai as genai
-import time
+import time, json
+
+# Loading data from the file
+training_data_file = "src/app/utils/fine_tuning/gemini_dataset.jsonl"
+
+training_data = []
+with open(training_data_file, "r") as file:
+    for line in file:
+        training_data.append(json.loads(line))
 
 base_model = "models/gemini-1.5-flash-001-tuning"
-training_data = [
-    {"text_input": "1", "output": "2"},
-    # ... more examples ...
-    # ...
-    {"text_input": "seven", "output": "eight"},
-]
 operation = genai.create_tuned_model(
-    # You can use a tuned model here too. Set `source_model="tunedModels/..."`
     display_name="increment",
     source_model=base_model,
     epoch_count=20,
@@ -23,6 +24,3 @@ for status in operation.wait_bar():
 
 result = operation.result()
 print(result)
-# # You can plot the loss curve with:
-# snapshots = pd.DataFrame(result.tuning_task.snapshots)
-# sns.lineplot(data=snapshots, x='epoch', y='mean_loss')
