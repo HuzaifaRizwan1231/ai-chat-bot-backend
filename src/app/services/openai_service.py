@@ -48,6 +48,7 @@ def openaiChatCompletion(model, text):
         print(response)
         return response
     
+# Send Chunk by Chunk response    
 async def openaiChatStream(model, text):
     async def generate_openai_response():
         try:
@@ -61,8 +62,6 @@ async def openaiChatStream(model, text):
                 content = chunk.choices[0].delta.content
                 if content:
                     yield f"data: {json.dumps({'text': content})}\n\n"
-                    # To handle fast state update on the frontend
-                    # await asyncio.sleep(0.07)
                     
         except Exception as e:
             yield f"data: {json.dumps({'text': str(e)})}\n\n"

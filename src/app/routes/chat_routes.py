@@ -8,10 +8,12 @@ from services.gemini_service import geminiChatCompletion
 from services.openai_service import openaiChatCompletion, openaiChatStream, openaiMergestackChatAssistant
 from services.claude_service import claudeChatCompletion
 from services.assemblyai_service import assemblyaiTranscribe
+from services.langchain_service import getLangchainResponse
 from utils.response_builder import ResponseBuilder
 from utils.pycrypto import decrypt
 from utils.limiter import limiter
-
+from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 # Initialize
 router = APIRouter()
@@ -30,7 +32,7 @@ async def chatCompletion(request: Request, body: chatCompletionRequestSchema):
     if body.model in ALLOWED_GEMINI_MODELS:
         return geminiChatCompletion(body.model, body.text)
     elif body.model in ALLOWED_OPENAI_MODELS:
-        return openaiChatCompletion(body.model, body.text) 
+        return openaiChatCompletion(body.model, body.text)         
     elif body.model in ALLOWED_CLAUDE_MODELS:
         return claudeChatCompletion(body.model,body.text)
     elif body.model == "mergestack-chat-assistant":
@@ -38,7 +40,27 @@ async def chatCompletion(request: Request, body: chatCompletionRequestSchema):
     else:
         return ResponseBuilder().setSuccess(False).setMessage("Invalid model").setStatusCode(400).build()
     
+@router.post("/langchain-completion")
+@limiter.limit("5/minute")
+async def langchainChatCompletion(request: Request, body: chatCompletionRequestSchema):
     
+    text = body.text
+    model = body.model
+    
+    if model not in ALLOWED_OPENAI_MODELS + ALLOWED_GEMINI_MODELS + ALLOWED_CLAUDE_MODELS:
+        return ResponseBuilder().setSuccess(False).setMessage("Invalid model").setStatusCode(400).build()
+    
+    text = decrypt(text)
+    
+    if model in ALLOWED_OPENAI_MODELS:
+        langchainModel = ChatOpenAI(model=model)
+            
+    if model in ALLOWED_GEMINI_MODELS:
+        langchainModel = ChatGoogleGenerativeAI(model=model, api_key=GEMINI_API_KEY)
+
+    return getLangchainResponse(langchainModel, text, model)
+    
+        
 @router.post("/transcribe")
 @limiter.limit("1/minute")
 async def transcribe(request: Request , audio: UploadFile = File(...)):
