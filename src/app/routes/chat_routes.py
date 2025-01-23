@@ -3,13 +3,13 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 import openai
 from config.config import GEMINI_API_KEY, OPENAI_API_KEY, ALLOWED_OPENAI_MODELS, ALLOWED_GEMINI_MODELS, ALLOWED_CLAUDE_MODELS, ALLOWED_STREAM_MODELS
-from schemas.chat_schema import chatCompletionRequestSchema, langchainCompletionRequestSchema
+from schemas.chat_schema import chatCompletionRequestSchema, langchainCompletionRequestSchema, updateChatRequestSchema
 from services.gemini_service import geminiChatCompletion
 from services.openai_service import openaiChatCompletion, openaiChatStream, openaiMergestackChatAssistant
 from services.claude_service import claudeChatCompletion
 from services.assemblyai_service import assemblyaiTranscribe
 from services.langchain_service import getLangchainResponse, getLangchainResponseMergestack
-from services.database_service import insertChat, getAllChats
+from services.database_service import insertChat, getAllChats, deleteChatRecord, updateChatRecord
 from utils.response_builder import ResponseBuilder
 from utils.pycrypto import decrypt
 from utils.limiter import limiter
@@ -93,3 +93,10 @@ def createNewChat(request: Request):
 def fetchChats(request: Request):
     return getAllChats()
    
+@router.delete("/delete")
+def deleteChat(request: Request, chatId: int):
+    return deleteChatRecord(chatId)
+   
+@router.post("/update")
+def updateChat(request: Request, body: updateChatRequestSchema):
+    return updateChatRecord(body)

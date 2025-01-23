@@ -20,7 +20,8 @@ def insertChat():
 
         chat_data = {
             "id": new_chat[0],
-            "created_at": new_chat[1],
+            "chat_title": new_chat[1],
+            "created_at": new_chat[2],
         }
         
         return ResponseBuilder().setData(chat_data).setSuccess(True).setMessage("Chat Inserted Successfully").setStatusCode(200).build();
@@ -39,7 +40,7 @@ def getAllChats():
         cursor.execute("SELECT * FROM chat")
         chats = cursor.fetchall()
         
-        chat_list = [{"id": chat[0], "created_at":chat[1]} for chat in chats]
+        chat_list = [{"id": chat[0],"title":chat[1], "created_at":chat[2]} for chat in chats]
         
         return ResponseBuilder().setData(chat_list).setSuccess(True).setMessage("Chats Fetched Successfully").setStatusCode(200).build();
     except Exception as e:
@@ -76,6 +77,39 @@ def insertMessage(message):
         conn.commit()
         
         return ResponseBuilder().setSuccess(True).setMessage("Message Inserted Successfully").setStatusCode(200).build();
+    except Exception as e:
+        response = ResponseBuilder().setSuccess(False).setMessage("An Error Occured").setError(str(e)).setStatusCode(500).build()
+        # Logging the error
+        print(response)
+        return response
+    
+def deleteChatRecord(chatId):
+    
+    global conn, cursor
+    
+    try:
+        # Insert new chat and return the chatId
+        cursor.execute("DELETE FROM chat WHERE chat_id = %s", (chatId,))
+        conn.commit()
+        
+        return ResponseBuilder().setSuccess(True).setMessage("Chat Deleted Successfully").setStatusCode(200).build();
+    except Exception as e:
+        response = ResponseBuilder().setSuccess(False).setMessage("An Error Occured").setError(str(e)).setStatusCode(500).build()
+        # Logging the error
+        print(response)
+        return response
+    
+    
+def updateChatRecord(body):
+    global conn, cursor
+    title = body.title
+    chatId = body.chatId
+    try:
+        # Insert new chat and return the chatId
+        cursor.execute("UPDATE chat SET chat_title = %s WHERE chat_id = %s", (title,chatId,))
+        conn.commit()
+        
+        return ResponseBuilder().setSuccess(True).setMessage("Chat Updated Successfully").setStatusCode(200).build();
     except Exception as e:
         response = ResponseBuilder().setSuccess(False).setMessage("An Error Occured").setError(str(e)).setStatusCode(500).build()
         # Logging the error

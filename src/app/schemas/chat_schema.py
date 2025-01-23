@@ -9,3 +9,8 @@ class langchainCompletionRequestSchema(BaseModel):
     model: str
     text: str
     chatId: int
+    
+    
+class updateChatRequestSchema(BaseModel):
+    chatId:int
+    title: str
