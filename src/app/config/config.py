@@ -30,3 +30,10 @@ TEMPERATURE = 0.7
 
 #CLAUDE model configs
 MAX_TOKEN = 1024
+
+# Mysql Configs
+MYSQL_HOST= os.getenv("MYSQL_HOST")
+MYSQL_USER= os.getenv("MYSQL_USER")
+MYSQL_PASSWORD= os.getenv("MYSQL_PASSWORD")
+MYSQL_DATABASE= os.getenv("MYSQL_DATABASE")
+MYSQL_PORT = os.getenv("MYSQL_PORT")

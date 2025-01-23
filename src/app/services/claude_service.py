@@ -1,6 +1,5 @@
 import anthropic
-from config import MAX_TOKEN
-from config import CLAUDE_API_KEY
+from config.config import MAX_TOKEN,CLAUDE_API_KEY
 from utils.response_builder import ResponseBuilder
 from utils.pycrypto import encrypt
 

@@ -2,13 +2,14 @@ from fastapi import APIRouter, UploadFile, File, Request
 from dotenv import load_dotenv
 import google.generativeai as genai
 import openai
-from config import GEMINI_API_KEY, OPENAI_API_KEY, ALLOWED_OPENAI_MODELS, ALLOWED_GEMINI_MODELS, ALLOWED_CLAUDE_MODELS, ALLOWED_STREAM_MODELS
-from schemas.chat_schema import chatCompletionRequestSchema
+from config.config import GEMINI_API_KEY, OPENAI_API_KEY, ALLOWED_OPENAI_MODELS, ALLOWED_GEMINI_MODELS, ALLOWED_CLAUDE_MODELS, ALLOWED_STREAM_MODELS
+from schemas.chat_schema import chatCompletionRequestSchema, langchainCompletionRequestSchema
 from services.gemini_service import geminiChatCompletion
 from services.openai_service import openaiChatCompletion, openaiChatStream, openaiMergestackChatAssistant
 from services.claude_service import claudeChatCompletion
 from services.assemblyai_service import assemblyaiTranscribe
-from services.langchain_service import getLangchainResponse
+from services.langchain_service import getLangchainResponse, getLangchainResponseMergestack
+from services.database_service import insertChat, getAllChats
 from utils.response_builder import ResponseBuilder
 from utils.pycrypto import decrypt
 from utils.limiter import limiter
@@ -42,23 +43,25 @@ async def chatCompletion(request: Request, body: chatCompletionRequestSchema):
     
 @router.post("/langchain-completion")
 @limiter.limit("5/minute")
-async def langchainChatCompletion(request: Request, body: chatCompletionRequestSchema):
+async def langchainChatCompletion(request: Request, body: langchainCompletionRequestSchema):
     
     text = body.text
     model = body.model
+    chatId = body.chatId
     
-    if model not in ALLOWED_OPENAI_MODELS + ALLOWED_GEMINI_MODELS + ALLOWED_CLAUDE_MODELS:
+    if model not in ALLOWED_OPENAI_MODELS + ALLOWED_GEMINI_MODELS + ALLOWED_CLAUDE_MODELS + ["mergestack-chat-assistant"]:
         return ResponseBuilder().setSuccess(False).setMessage("Invalid model").setStatusCode(400).build()
     
     text = decrypt(text)
     
+    if model == "mergestack-chat-assistant":
+        return getLangchainResponseMergestack("gpt-4o",text)
+    
     if model in ALLOWED_OPENAI_MODELS:
         langchainModel = ChatOpenAI(model=model)
-            
-    if model in ALLOWED_GEMINI_MODELS:
+    elif model in ALLOWED_GEMINI_MODELS:
         langchainModel = ChatGoogleGenerativeAI(model=model, api_key=GEMINI_API_KEY)
-
-    return getLangchainResponse(langchainModel, text, model)
+    return getLangchainResponse(langchainModel, text, model, chatId)
     
         
 @router.post("/transcribe")
@@ -82,3 +85,11 @@ async def chatStream(request: Request, model: str, text: str):
         return ResponseBuilder().setSuccess(False).setMessage("Invalid model").setStatusCode(400).build()
 
 
+@router.post("/create")
+def createNewChat(request: Request):
+    return insertChat()
+   
+@router.get("/get")
+def fetchChats(request: Request):
+    return getAllChats()
+   

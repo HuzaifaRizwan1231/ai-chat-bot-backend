@@ -1,6 +1,6 @@
 import assemblyai as aai
 from utils.response_builder import ResponseBuilder
-from config import ASSEMBLYAI_API_KEY
+from config.config import ASSEMBLYAI_API_KEY
 from utils.pycrypto import encrypt
 
 aai.settings.api_key = ASSEMBLYAI_API_KEY
