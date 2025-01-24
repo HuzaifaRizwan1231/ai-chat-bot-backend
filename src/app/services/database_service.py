@@ -8,6 +8,9 @@ def insertChat():
     
     global conn, cursor
     
+    conn = DatabaseConnection().create_connection()
+    cursor = conn.cursor()
+    
     try:
         # Insert new chat and return the chatId
         cursor.execute("INSERT INTO chat (chat_id) VALUES (DEFAULT)")
@@ -35,6 +38,9 @@ def getAllChats():
     
     global conn, cursor
     
+    conn = DatabaseConnection().create_connection()
+    cursor = conn.cursor()
+
     try:
         # Insert new chat and return the chatId
         cursor.execute("SELECT * FROM chat")
@@ -51,8 +57,12 @@ def getAllChats():
     
 
 def getAllMessagesOfChat(chatId):
+    
     global conn, cursor
     
+    conn = DatabaseConnection().create_connection()
+    cursor = conn.cursor()
+
     try:
         # Insert new chat and return the chatId
         cursor.execute("SELECT * FROM message WHERE chat_id = %s", (chatId,))
@@ -71,6 +81,9 @@ def insertMessage(message):
     
     global conn, cursor
     
+    conn = DatabaseConnection().create_connection()
+    cursor = conn.cursor()
+
     try:
         # Insert new chat and return the chatId
         cursor.execute("INSERT INTO message (content, sender, chat_id) VALUES (%s, %s, %s)", (message.text, message.sender, message.chatId))
@@ -87,6 +100,9 @@ def deleteChatRecord(chatId):
     
     global conn, cursor
     
+    conn = DatabaseConnection().create_connection()
+    cursor = conn.cursor()
+
     try:
         # Insert new chat and return the chatId
         cursor.execute("DELETE FROM chat WHERE chat_id = %s", (chatId,))
@@ -101,9 +117,15 @@ def deleteChatRecord(chatId):
     
     
 def updateChatRecord(body):
+    
     global conn, cursor
+    
+    conn = DatabaseConnection().create_connection()
+    cursor = conn.cursor()
+
     title = body.title
     chatId = body.chatId
+    
     try:
         # Insert new chat and return the chatId
         cursor.execute("UPDATE chat SET chat_title = %s WHERE chat_id = %s", (title,chatId,))
