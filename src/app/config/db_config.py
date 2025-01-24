@@ -24,7 +24,8 @@ class DatabaseConnection:
                 user=MYSQL_USER,
                 password=MYSQL_PASSWORD,
                 database=MYSQL_DATABASE,
-                port=MYSQL_PORT
+                port=MYSQL_PORT,
+                connection_timeout=10
             )
             print("Connection pool created successfully")
         except Error as e:
