@@ -1,13 +1,15 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, UploadFile, File
 from dotenv import load_dotenv
 import google.generativeai as genai
-import openai, anthropic
+import openai
 from config import GEMINI_API_KEY, OPENAI_API_KEY, ALLOWED_OPENAI_MODELS, ALLOWED_GEMINI_MODELS, ALLOWED_CLAUDE_MODELS
 from schemas.chat_schema import chatCompletionRequestSchema
 from services.gemini_service import geminiChatCompletion
 from services.openai_service import openaiChatCompletion, openaiMergestackChatAssistant
 from services.claude_service import claudeChatCompletion
+from services.assemblyai_service import assemblyaiTranscribe
 from utils.response_builder import ResponseBuilder
+from utils.pycrypto import decrypt
 
 
 # Initialize
@@ -20,6 +22,9 @@ openai.api_key = OPENAI_API_KEY
 
 @router.post("/completion")
 def chatCompletion(body: chatCompletionRequestSchema):
+    
+    body.text = decrypt(body.text)
+    
     if body.model in ALLOWED_GEMINI_MODELS:
         return geminiChatCompletion(body.model, body.text)
     elif body.model in ALLOWED_OPENAI_MODELS:
@@ -30,6 +35,17 @@ def chatCompletion(body: chatCompletionRequestSchema):
         return openaiMergestackChatAssistant("gpt-4o",body.text)
     else:
         return ResponseBuilder().setSuccess(False).setMessage("Invalid model").setStatusCode(400).build()
+    
+    
+@router.post("/transcribe")
+async def transcribe(audio: UploadFile = File(...)):
+    try:
+        # Process the uploaded audio file
+        audioContent = await audio.read()
+        # Send the audio content as a file
+        return assemblyaiTranscribe(audioContent)
+    except Exception as e:
+        return ResponseBuilder().setSuccess(False).setMessage("An Error Occurred").setError(str(e)).setStatusCode(500).build()
 
 
 

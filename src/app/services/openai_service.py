@@ -1,6 +1,7 @@
 import openai
 from utils.response_builder import ResponseBuilder
 from utils.mergestack_chat_assistant import MergeStackChatAssistant
+from utils.pycrypto import encrypt
 
 global mergestackInstance
 mergestackInstance = None
@@ -19,7 +20,8 @@ def openaiMergestackChatAssistant(model, text):
         )
         # Poll and run to get the response
         response = mergestackInstance.pollAndRun()
-        return ResponseBuilder().setSuccess(True).setMessage("Response Generated Successfully").setData(response.content[0].text.value).setStatusCode(200).build()
+        encrypted_data = encrypt(response.content[0].text.value)
+        return ResponseBuilder().setSuccess(True).setMessage("Response Generated Successfully").setData(encrypted_data).setStatusCode(200).build()
 
     except Exception as e:
         response = ResponseBuilder().setSuccess(False).setMessage("An Error Occured").setError(str(e)).setStatusCode(500).build()
@@ -36,7 +38,8 @@ def openaiChatCompletion(model, text):
                 {"role": "user", "content": text}
             ],
         )
-        return ResponseBuilder().setSuccess(True).setMessage("Response Generated Successfully").setData(completion.choices[0].message.content).setStatusCode(200).build()
+        encrypted_data = encrypt(completion.choices[0].message.content)
+        return ResponseBuilder().setSuccess(True).setMessage("Response Generated Successfully").setData(encrypted_data).setStatusCode(200).build()
 
     except Exception as e:
         response = ResponseBuilder().setSuccess(False).setMessage("An Error Occured").setError(str(e)).setStatusCode(500).build()

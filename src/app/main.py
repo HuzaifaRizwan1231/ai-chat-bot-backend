@@ -5,10 +5,14 @@ from routes import chat_routes
 # Initialize FastAPI app
 app = FastAPI()
 
+origins= [
+    "http://localhost:5173",
+]
+
 # CORS config
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=origins, 
     allow_credentials=True,
     allow_methods=["*"], 
     allow_headers=["*"], 
