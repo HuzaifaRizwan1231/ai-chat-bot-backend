@@ -1,3 +1,4 @@
+
 class ResponseBuilder:
     def __init__(self):
         self.response = {

@@ -1,6 +1,6 @@
 import google.generativeai as genai
 from utils.response_builder import ResponseBuilder
-from config import MAX_OUTPUT_TOKENS, TEMPERATURE
+from config.config import MAX_OUTPUT_TOKENS, TEMPERATURE
 from utils.pycrypto import encrypt
 
 def geminiChatCompletion(model, text):

@@ -19,6 +19,7 @@ AES_IV = (os.getenv("AES_IV"))
 ALLOWED_OPENAI_MODELS = ["gpt-4o", "ft:gpt-4o-mini-2024-07-18:mergestack::AqhhvrOU"]
 ALLOWED_GEMINI_MODELS = ["gemini-1.5-flash", "tunedModels/increment-vgmge91wh5dn"]
 ALLOWED_CLAUDE_MODELS = ["claude-3-5-sonnet-20241022"]
+ALLOWED_STREAM_MODELS = ["gpt-4o"]
 
 # OPEN AI model configs
 
@@ -29,3 +30,10 @@ TEMPERATURE = 0.7
 
 #CLAUDE model configs
 MAX_TOKEN = 1024
+
+# Mysql Configs
+MYSQL_HOST= os.getenv("MYSQL_HOST")
+MYSQL_USER= os.getenv("MYSQL_USER")
+MYSQL_PASSWORD= os.getenv("MYSQL_PASSWORD")
+MYSQL_DATABASE= os.getenv("MYSQL_DATABASE")
+MYSQL_PORT = os.getenv("MYSQL_PORT")

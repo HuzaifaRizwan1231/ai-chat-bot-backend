@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad, pad
-from config import AES_SECRET_KEY, AES_IV
+from config.config import AES_SECRET_KEY, AES_IV
 from utils.response_builder import ResponseBuilder
 import base64
 import json

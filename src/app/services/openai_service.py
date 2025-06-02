@@ -1,7 +1,8 @@
-import openai
+import openai, json, asyncio
 from utils.response_builder import ResponseBuilder
 from utils.mergestack_chat_assistant import MergeStackChatAssistant
 from utils.pycrypto import encrypt
+from fastapi.responses import StreamingResponse
 
 global mergestackInstance
 mergestackInstance = None
@@ -46,3 +47,24 @@ def openaiChatCompletion(model, text):
         # Logging the error
         print(response)
         return response
+    
+# Send Chunk by Chunk response    
+async def openaiChatStream(model, text):
+    async def generate_openai_response():
+        try:
+            response = openai.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": text}],
+                stream=True
+        )
+
+            for chunk in response:
+                content = chunk.choices[0].delta.content
+                if content:
+                    yield f"data: {json.dumps({'text': content})}\n\n"
+                    
+        except Exception as e:
+            yield f"data: {json.dumps({'text': str(e)})}\n\n"
+
+    # Return as streaming response
+    return StreamingResponse(generate_openai_response(), media_type="text/event-stream")
