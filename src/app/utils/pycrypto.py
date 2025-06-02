@@ -18,7 +18,6 @@ def decrypt(ciphertext: str) -> dict:
         encrypted_data = base64.b64decode(ciphertext)
         cipher = AES.new(AES_SECRET_KEY, AES.MODE_CBC, AES_IV)
         # Decrypt and unpad the data
-        print(AES.block_size)
         decrypted = unpad(cipher.decrypt(encrypted_data), AES.block_size)
         return json.loads(decrypted.decode('utf-8'))
     except Exception as e:

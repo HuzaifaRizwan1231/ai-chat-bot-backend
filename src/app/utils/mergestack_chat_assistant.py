@@ -7,9 +7,9 @@ class MergeStackChatAssistant:
         
         # Vector store creation
         vector_store = openai.beta.vector_stores.create(name="MergeStack Policy Store")
-        base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+        base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
         file_paths = [
-            os.path.join(base_dir, "files", "mergestack_policy.pdf")
+            os.path.join(base_dir, "uploads", "mergestack_policy.pdf")
         ]
         file_streams = [open(path, "rb") for path in file_paths]
         file_batch = openai.beta.vector_stores.file_batches.upload_and_poll(
