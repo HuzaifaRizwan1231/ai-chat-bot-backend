@@ -25,7 +25,7 @@ genai.configure(api_key=GEMINI_API_KEY)
 openai.api_key = OPENAI_API_KEY
 
 @router.post("/completion")
-@limiter.limit("5/minute")
+@limiter.limit("50/minute")
 async def chatCompletion(request: Request, body: chatCompletionRequestSchema):
     
     body.text = decrypt(body.text)
@@ -42,7 +42,7 @@ async def chatCompletion(request: Request, body: chatCompletionRequestSchema):
         return ResponseBuilder().setSuccess(False).setMessage("Invalid model").setStatusCode(400).build()
     
 @router.post("/langchain-completion")
-@limiter.limit("5/minute")
+@limiter.limit("50/minute")
 async def langchainChatCompletion(request: Request, body: langchainCompletionRequestSchema):
     
     text = body.text
@@ -65,7 +65,7 @@ async def langchainChatCompletion(request: Request, body: langchainCompletionReq
     
         
 @router.post("/transcribe")
-@limiter.limit("1/minute")
+@limiter.limit("50/minute")
 async def transcribe(request: Request , audio: UploadFile = File(...)):
     try:
         # Process the uploaded audio file
@@ -76,7 +76,7 @@ async def transcribe(request: Request , audio: UploadFile = File(...)):
         return ResponseBuilder().setSuccess(False).setMessage("An Error Occurred").setError(str(e)).setStatusCode(500).build()
 
 @router.get("/stream")
-@limiter.limit("5/minute")
+@limiter.limit("50/minute")
 async def chatStream(request: Request, model: str, text: str):
 
     if model in ALLOWED_STREAM_MODELS and model in ALLOWED_OPENAI_MODELS:
