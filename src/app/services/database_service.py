@@ -1,13 +1,8 @@
 from utils.response_builder import ResponseBuilder
 from config.db_config import DatabaseConnection
 
-conn = DatabaseConnection().create_connection()
-cursor = conn.cursor()
-
 def insertChat():
-    
-    global conn, cursor
-    
+
     conn = DatabaseConnection().create_connection()
     cursor = conn.cursor()
     
@@ -34,9 +29,13 @@ def insertChat():
         print(response)
         return response
     
-def getAllChats():
+    finally:
+        if cursor:
+            cursor.close()
+        if conn and conn.is_connected():
+            conn.close()
     
-    global conn, cursor
+def getAllChats():
     
     conn = DatabaseConnection().create_connection()
     cursor = conn.cursor()
@@ -55,10 +54,14 @@ def getAllChats():
         print(response)
         return response
     
+    finally:
+        if cursor:
+            cursor.close()
+        if conn and conn.is_connected():
+            conn.close()
+    
 
 def getAllMessagesOfChat(chatId):
-    
-    global conn, cursor
     
     conn = DatabaseConnection().create_connection()
     cursor = conn.cursor()
@@ -77,9 +80,13 @@ def getAllMessagesOfChat(chatId):
         print(response)
         return response
     
-def insertMessage(message):
+    finally:
+        if cursor:
+            cursor.close()
+        if conn and conn.is_connected():
+            conn.close()
     
-    global conn, cursor
+def insertMessage(message):
     
     conn = DatabaseConnection().create_connection()
     cursor = conn.cursor()
@@ -96,9 +103,13 @@ def insertMessage(message):
         print(response)
         return response
     
-def deleteChatRecord(chatId):
+    finally:
+        if cursor:
+            cursor.close()
+        if conn and conn.is_connected():
+            conn.close()
     
-    global conn, cursor
+def deleteChatRecord(chatId):
     
     conn = DatabaseConnection().create_connection()
     cursor = conn.cursor()
@@ -115,10 +126,14 @@ def deleteChatRecord(chatId):
         print(response)
         return response
     
+    finally:
+        if cursor:
+            cursor.close()
+        if conn and conn.is_connected():
+            conn.close()
+    
     
 def updateChatRecord(body):
-    
-    global conn, cursor
     
     conn = DatabaseConnection().create_connection()
     cursor = conn.cursor()
@@ -137,3 +152,9 @@ def updateChatRecord(body):
         # Logging the error
         print(response)
         return response
+    
+    finally:
+        if cursor:
+            cursor.close()
+        if conn and conn.is_connected():
+            conn.close()
